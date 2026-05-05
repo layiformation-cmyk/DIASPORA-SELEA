@@ -176,7 +176,7 @@ export default function Home() {
       >
         <div className="mb-16">
           <h2 className="text-sm font-bold text-brand uppercase tracking-widest mb-2">Protection & Futur</h2>
-          <h3 className="text-5xl font-display font-bold uppercase">HAFANI - ASSURANCE décès</h3>
+          <h3 className="text-3xl md:text-4xl font-display font-bold uppercase">HAFANI - ASSURANCE décès</h3>
           <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
             Notre programme d'assurance décès exclusif, structuré en pôles régionaux pour une proximité maximale.
           </p>
