@@ -50,6 +50,16 @@
   animation-play-state: paused;
 }
 
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 .btn-primary {
   @apply bg-brand text-black font-semibold px-6 py-3 rounded-full hover:bg-white transition-all duration-300 active:scale-95;
 }

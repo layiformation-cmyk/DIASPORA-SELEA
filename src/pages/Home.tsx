@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search as SearchIcon, Calendar, ArrowRight, User, ShieldCheck, X } from 'lucide-react';
+import { Search as SearchIcon, Calendar, ArrowRight, User, ShieldCheck, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { EVENTS, MEMBERS } from '../constants';
 
@@ -258,18 +258,30 @@ export default function Home() {
           <h3 className="text-3xl md:text-5xl font-display font-black uppercase text-center md:text-left">Autres évènements</h3>
         </div>
 
-        <div className="relative pause-on-hover px-4">
+        <div className="relative group/gallery px-4">
           <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-navy/40 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-navy/40 to-transparent z-10 pointer-events-none" />
           
-          <div className="overflow-hidden">
-            <div className="flex gap-8 py-4 animate-scroll whitespace-nowrap w-max">
-              {[...galleryImages, ...galleryImages, ...galleryImages].map((img, idx) => (
+          <div 
+            id="gallery-container"
+            className="overflow-hidden whitespace-nowrap"
+          >
+            <motion.div 
+              className="flex gap-8 py-4 w-max"
+              animate={{ x: [0, -1000] }}
+              transition={{ 
+                duration: 40, 
+                repeat: Infinity, 
+                ease: "linear"
+              }}
+              whileHover={{ animationPlayState: 'paused' }}
+            >
+              {[...galleryImages, ...galleryImages, ...galleryImages, ...galleryImages].map((img, idx) => (
                 <motion.div
                   key={idx}
                   whileHover={{ scale: 1.05, y: -10 }}
                   onClick={() => setSelectedGalleryImage(img)}
-                  className="inline-block w-[240px] md:w-[320px] aspect-[9/16] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden border border-white/20 bg-white/10 cursor-pointer shadow-3xl transition-all hover:border-brand/50 group/img relative"
+                  className="inline-block flex-shrink-0 w-[240px] md:w-[320px] aspect-[9/16] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden border border-white/20 bg-white/10 cursor-pointer shadow-3xl transition-all hover:border-brand/50 group/img relative"
                 >
                   <img 
                     src={img} 
@@ -284,8 +296,28 @@ export default function Home() {
                   </div>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
+
+          {/* Navigation Arrows - Using a simpler implementation for manual scroll alongside animation */}
+          <button 
+            onClick={() => {
+              const el = document.getElementById('gallery-container');
+              if (el) el.scrollLeft -= 400;
+            }}
+            className="absolute left-8 top-1/2 -translate-y-1/2 z-20 p-4 bg-brand text-black rounded-2xl hover:bg-white transition-all shadow-2xl opacity-0 group-hover/gallery:opacity-100 hidden md:flex items-center justify-center"
+          >
+            <ChevronLeft className="w-8 h-8" />
+          </button>
+          <button 
+            onClick={() => {
+              const el = document.getElementById('gallery-container');
+              if (el) el.scrollLeft += 400;
+            }}
+            className="absolute right-8 top-1/2 -translate-y-1/2 z-20 p-4 bg-brand text-black rounded-2xl hover:bg-white transition-all shadow-2xl opacity-0 group-hover/gallery:opacity-100 hidden md:flex items-center justify-center"
+          >
+            <ChevronRight className="w-8 h-8" />
+          </button>
         </div>
       </section>
 
@@ -567,12 +599,6 @@ export default function Home() {
               />
               
               <div className="absolute top-8 right-8 flex gap-4">
-                <button 
-                  onClick={() => handleDownload(selectedGalleryImage)}
-                  className="p-4 bg-brand text-black rounded-full hover:bg-white transition-all shadow-xl flex items-center gap-2 font-bold uppercase text-xs tracking-widest"
-                >
-                  <SearchIcon className="w-5 h-5" /> Télécharger
-                </button>
                 <button 
                   onClick={() => setSelectedGalleryImage(null)}
                   className="p-4 bg-white/10 text-white rounded-full hover:bg-white/20 transition-all backdrop-blur-md"
