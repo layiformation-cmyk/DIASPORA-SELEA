@@ -20,6 +20,7 @@ export default function Home() {
   const [code, setCode] = useState('');
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
+  const [showPresentation, setShowPresentation] = useState(false);
 
   const nextEvent = EVENTS[0];
 
@@ -28,7 +29,7 @@ export default function Home() {
     { id: 'lyon', name: 'Lyon', image: 'https://images.unsplash.com/photo-1528660493888-ab6f4761e036?q=80&w=2070&auto=format&fit=crop' },
     { id: 'marseille', name: 'Marseille', image: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=2073&auto=format&fit=crop' },
     { id: 'vannes', name: 'Vannes', image: 'https://images.unsplash.com/photo-1572455044327-7348c1be7267?q=80&w=2070&auto=format&fit=crop' },
-    { id: 'reunion', name: 'La Réunion', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=2074&auto=format&fit=crop' }
+    { id: 'reunion', name: 'La Réunion', image: 'https://image.noelshack.com/fichiers/2026/19/3/1778020749-photos-la-reunion-cascade-aigrettes.jpg' }
   ];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,12 +93,52 @@ export default function Home() {
             <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-brand border border-brand/20 bg-brand/5 rounded-full uppercase">
               Association
             </span>
-            <h1 className="text-4xl md:text-7xl font-display font-extrabold tracking-tight mb-8 leading-[1.1]">
-              Bienvenue sur le site de <span className="text-brand">l'association</span>
+            <h1 className="text-3xl sm:text-4xl md:text-8xl font-serif font-medium tracking-tight mb-8 leading-[1.1]">
+              <span className="block text-white mb-2 italic">Bienvenue sur le site de</span>
+              <span className="text-magnificent font-black uppercase font-display block scale-[0.85] sm:scale-100 md:scale-[1.2] origin-center mt-2 md:mt-4">l'association</span>
             </h1>
-            <p className="text-xl text-white mb-10 max-w-2xl mx-auto leading-relaxed">
-              Unité et solidarité de la diaspora de Selea de l'étranger ; Contribuer pour une meilleure intégration de la diaspora de Selea à l'étranger ; Promouvoir les valeurs culturelles Comoriennes à travers des activités festives.
+            <p className="text-lg md:text-2xl text-white/80 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+              Unité et solidarité de la diaspora de <span className="text-white font-bold group">Selea</span> de l'étranger.
+              <span className="block mt-4 text-sm md:text-base text-gray-400 uppercase tracking-[0.2em] font-medium mb-4">Culture • Intégration • Solidarité</span>
+              <button 
+                onClick={() => setShowPresentation(!showPresentation)}
+                className="text-brand hover:text-white text-sm font-bold uppercase tracking-widest transition-colors inline-flex items-center gap-2 group"
+              >
+                {showPresentation ? 'Voir moins' : 'En savoir plus'}
+                <ArrowRight className={`w-4 h-4 transition-transform ${showPresentation ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
+              </button>
             </p>
+
+            <AnimatePresence>
+              {showPresentation && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="overflow-hidden mb-12"
+                >
+                  <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 md:p-12 text-left max-w-3xl mx-auto backdrop-blur-xl relative">
+                    <div className="absolute top-0 left-12 w-24 h-1 bg-brand/50 rounded-full" />
+                    <h2 className="text-2xl md:text-3xl font-display font-bold mb-8 text-brand">Présentation de l’association</h2>
+                    <div className="space-y-6 text-gray-400 leading-relaxed text-sm md:text-base font-light">
+                      <p>
+                        L’association <span className="text-white font-bold">Unité et Solidarité de la diaspora de Selea de l’étranger</span> a pour vocation de rassembler les membres de la diaspora originaires de Selea autour de valeurs communes de solidarité, d’entraide et de partage.
+                      </p>
+                      <p>
+                        Elle œuvre activement pour favoriser une meilleure intégration de ses membres dans leurs pays d’accueil, en créant des espaces d’échange, de soutien et d’accompagnement. L’association constitue ainsi un véritable lien entre les générations et les parcours, tout en renforçant le sentiment d’appartenance à une communauté.
+                      </p>
+                      <p>
+                        Par ailleurs, elle s’engage à promouvoir les richesses culturelles comoriennes à travers l’organisation d’activités festives, culturelles et sociales. Ces événements permettent de valoriser les traditions, de transmettre le patrimoine aux jeunes générations et de faire rayonner la culture comorienne à l’étranger.
+                      </p>
+                      <p>
+                        <span className="text-white font-bold italic">Selea</span>, ville située dans la région de Bambao en Comores, est au cœur de cette dynamique. L’association s’attache à préserver les liens avec cette localité d’origine, tout en contribuant au développement et à la cohésion de sa diaspora à travers le monde.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <a 
                 href="https://wa.me/33646689634" 

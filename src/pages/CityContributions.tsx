@@ -1,13 +1,22 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { ShieldCheck, ShieldAlert, User, ArrowLeft, X, Check, Minus } from 'lucide-react';
-import { useState } from 'react';
+import { ShieldCheck, ShieldAlert, User, ArrowLeft, X, Check, Minus, Search } from 'lucide-react';
+import { useState, useMemo } from 'react';
 import { CONTRIBUTORS_DATA, Contributor } from '../data/contributors';
 
 export default function CityContributions() {
   const { cityId } = useParams();
   const city = CONTRIBUTORS_DATA.find(c => c.id === cityId);
   const [selectedContributor, setSelectedContributor] = useState<Contributor | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredContributors = useMemo(() => {
+    if (!city) return [];
+    return city.contributors.filter(c => 
+      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      c.id.toString().includes(searchQuery)
+    );
+  }, [city, searchQuery]);
 
   if (!city) {
     return (
@@ -21,51 +30,78 @@ export default function CityContributions() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
-      <div className="mb-12">
-        <Link to="/" className="text-gray-400 hover:text-white flex items-center gap-2 mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Retour à l'accueil
-        </Link>
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-12 h-12 bg-brand/10 rounded-2xl flex items-center justify-center text-brand">
-            <ShieldCheck className="w-7 h-7" />
+    <div className="max-w-7xl mx-auto px-6 py-12 pt-24 md:pt-32">
+      <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <div className="flex-1">
+          <Link to="/" className="text-gray-400 hover:text-white flex items-center gap-2 mb-6 transition-colors group w-fit">
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Retour à l'accueil
+          </Link>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-12 bg-brand/10 rounded-2xl flex items-center justify-center text-brand shrink-0">
+              <ShieldCheck className="w-7 h-7" />
+            </div>
+            <h1 className="text-4xl md:text-6xl font-display font-black tracking-tight uppercase leading-tight">
+              Pôle <span className="text-brand">{city.name}</span>
+            </h1>
           </div>
-          <h1 className="text-4xl md:text-6xl font-display font-black tracking-tight uppercase">
-            Pôle <span className="text-brand">{city.name}</span>
-          </h1>
+          <p className="text-xl text-gray-400 max-w-2xl leading-relaxed">
+            Liste officielle des membres cotisants au programme <span className="text-white font-bold italic">Hafani de Selea</span>.
+          </p>
         </div>
-        <p className="text-xl text-gray-400 max-w-2xl">
-          Liste officielle des membres cotisants au programme Hafani de Selea Selea.
-        </p>
+
+        <div className="relative w-full md:w-80 group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-brand transition-colors" />
+          <input 
+            type="text"
+            placeholder="Rechercher un membre..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-sm focus:outline-none focus:border-brand/50 transition-all placeholder:text-white/20"
+          />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {city.contributors.map((contributor) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {filteredContributors.map((contributor) => (
           <motion.button
             key={contributor.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.08)' }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setSelectedContributor(contributor)}
-            className="flex items-center justify-between p-6 bg-white/5 border border-white/10 rounded-2xl hover:border-brand/50 transition-all group text-left"
+            className="flex items-center justify-between p-5 bg-white/5 border border-white/10 rounded-2xl hover:border-brand/50 transition-all group text-left cursor-pointer shadow-sm hover:shadow-brand/5"
           >
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-brand/10 rounded-full flex items-center justify-center group-hover:bg-brand group-hover:text-black transition-colors">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 bg-brand/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-brand group-hover:text-black transition-colors">
                 <User className="w-5 h-5" />
               </div>
-              <div>
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-0.5">N° {contributor.id}</p>
-                <h3 className="text-lg font-bold text-white group-hover:text-brand transition-colors line-clamp-1">{contributor.name}</h3>
+              <div className="truncate">
+                <p className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-0.5">#{contributor.id}</p>
+                <h3 className="text-sm font-bold text-white group-hover:text-brand transition-colors truncate">{contributor.name}</h3>
               </div>
             </div>
-            <div className="flex flex-col items-end">
-              <span className="text-xs font-bold text-brand">{contributor.amount}</span>
-              <div className={`w-2 h-2 rounded-full mt-2 ${contributor.contributions['2025'] === 'X' || contributor.contributions['2025'] === 'XX' ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`} title={contributor.contributions['2025'] === 'X' || contributor.contributions['2025'] === 'XX' ? 'À jour' : 'Pas à jour'} />
+            <div className="flex flex-col items-end gap-1.5 shrink-0 ml-2">
+              <span className="text-[10px] font-black text-brand tabular-nums">{contributor.amount}</span>
+              <div 
+                className={`w-2 h-2 rounded-full ${contributor.contributions['2025'] === 'X' || contributor.contributions['2025'] === 'XX' ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`} 
+                title={contributor.contributions['2025'] === 'X' || contributor.contributions['2025'] === 'XX' ? 'À jour' : 'Pas à jour'} 
+              />
             </div>
           </motion.button>
         ))}
       </div>
+
+      {filteredContributors.length === 0 && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="py-20 text-center border border-white/5 bg-white/5 rounded-[2rem] mt-4"
+        >
+          <User className="w-12 h-12 text-white/10 mx-auto mb-4" />
+          <p className="text-gray-500 font-medium italic">Aucun membre trouvé pour "{searchQuery}".</p>
+        </motion.div>
+      )}
 
       {/* Contributor Detail Modal */}
       <AnimatePresence>
