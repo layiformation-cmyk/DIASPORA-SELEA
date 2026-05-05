@@ -30,6 +30,33 @@ export default function Home() {
     gender: ''
   });
 
+  const [selectedGalleryImage, setSelectedGalleryImage] = useState<string | null>(null);
+
+  const galleryImages = [
+    'https://image.noelshack.com/fichiers/2026/19/3/1778022494-photo-2026-05-06-01-08-03.jpg',
+    'https://image.noelshack.com/fichiers/2026/19/3/1778022494-photo-2026-05-06-01-08-07.jpg',
+    'https://image.noelshack.com/fichiers/2026/19/3/1778022494-photo-2026-05-06-01-08-03.jpg', // Duplicated for infinite effect
+    'https://image.noelshack.com/fichiers/2026/19/3/1778022494-photo-2026-05-06-01-08-07.jpg',
+  ];
+
+  const handleDownload = async (imageUrl: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `association-selea-${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Download failed', error);
+      // Fallback: just open in new tab
+      window.open(imageUrl, '_blank');
+    }
+  };
+
   const handleRegistrationSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const message = `Bonjour, je souhaite m'inscrire à l'association.\n\n📝 Informations :\n• Nom : ${formData.lastName.toUpperCase()}\n• Prénom : ${formData.firstName}\n• Ville affiliée : ${formData.city}\n• Genre : ${formData.gender}`;
@@ -220,6 +247,46 @@ export default function Home() {
         </div>
       </motion.section>
 
+
+      {/* Gallery Carousel Section */}
+      <section className="py-24 border-t border-white/5 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand/20 to-transparent" />
+        
+        <div className="mb-12 max-w-7xl mx-auto px-6">
+          <h2 className="text-sm font-bold text-brand uppercase tracking-[0.3em] mb-2">Moments</h2>
+          <h3 className="text-3xl md:text-5xl font-display font-black uppercase">Autres évènements</h3>
+        </div>
+
+        <div className="relative pause-on-hover px-4">
+          <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-black to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-black to-transparent z-10 pointer-events-none" />
+          
+          <div className="overflow-hidden">
+            <div className="flex gap-8 py-4 animate-scroll whitespace-nowrap w-max">
+              {[...galleryImages, ...galleryImages, ...galleryImages].map((img, idx) => (
+                <motion.div
+                  key={idx}
+                  whileHover={{ scale: 1.05, y: -10 }}
+                  onClick={() => setSelectedGalleryImage(img)}
+                  className="inline-block w-[240px] md:w-[320px] aspect-[9/16] rounded-[2.5rem] md:rounded-[3rem] overflow-hidden border border-white/10 bg-white/5 cursor-pointer shadow-3xl transition-all hover:border-brand/50 group/img relative"
+                >
+                  <img 
+                    src={img} 
+                    alt={`Moment ${idx}`} 
+                    className="w-full h-full object-cover grayscale-[0.3] group-hover/img:grayscale-0 transition-all duration-700" 
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity flex items-end justify-center p-8">
+                    <div className="w-14 h-14 bg-brand text-black rounded-2xl flex items-center justify-center scale-75 group-hover/img:scale-100 transition-transform shadow-2xl">
+                      <SearchIcon className="w-7 h-7" />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* HAFANI Section */}
       <motion.section 
@@ -471,6 +538,47 @@ export default function Home() {
                   Envoyer ma demande
                 </button>
               </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {selectedGalleryImage && (
+          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedGalleryImage(null)}
+              className="absolute inset-0 bg-black/95 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative max-w-5xl w-full aspect-video rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl"
+            >
+              <img 
+                src={selectedGalleryImage} 
+                className="w-full h-full object-contain" 
+                alt="Full size"
+                referrerPolicy="no-referrer"
+              />
+              
+              <div className="absolute top-8 right-8 flex gap-4">
+                <button 
+                  onClick={() => handleDownload(selectedGalleryImage)}
+                  className="p-4 bg-brand text-black rounded-full hover:bg-white transition-all shadow-xl flex items-center gap-2 font-bold uppercase text-xs tracking-widest"
+                >
+                  <SearchIcon className="w-5 h-5" /> Télécharger
+                </button>
+                <button 
+                  onClick={() => setSelectedGalleryImage(null)}
+                  className="p-4 bg-white/10 text-white rounded-full hover:bg-white/20 transition-all backdrop-blur-md"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
             </motion.div>
           </div>
         )}
