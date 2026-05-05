@@ -21,6 +21,22 @@ export default function Home() {
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [selectedMember, setSelectedMember] = useState<string | null>(null);
   const [showPresentation, setShowPresentation] = useState(false);
+  const [showInsuranceDetails, setShowInsuranceDetails] = useState(false);
+  const [showRegistration, setShowRegistration] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    city: '',
+    gender: ''
+  });
+
+  const handleRegistrationSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const message = `Bonjour, je souhaite m'inscrire à l'association.\n\n📝 Informations :\n• Nom : ${formData.lastName.toUpperCase()}\n• Prénom : ${formData.firstName}\n• Ville affiliée : ${formData.city}\n• Genre : ${formData.gender}`;
+    const whatsappUrl = `https://wa.me/33646689634?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+    setShowRegistration(false);
+  };
 
   const nextEvent = EVENTS[0];
 
@@ -140,14 +156,12 @@ export default function Home() {
               )}
             </AnimatePresence>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a 
-                href="https://wa.me/33646689634" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="btn-outline w-full sm:w-auto text-lg px-10 uppercase inline-flex items-center justify-center"
+              <button 
+                onClick={() => setShowRegistration(true)}
+                className="btn-outline w-full sm:w-auto text-lg px-10 uppercase inline-flex items-center justify-center cursor-pointer"
               >
-                NOUS REJOINDRE
-              </a>
+                S'INSCRIRE
+              </button>
             </div>
           </motion.div>
         </div>
@@ -193,14 +207,12 @@ export default function Home() {
                   <span className="text-2xl font-display font-black text-brand underline decoration-brand/30">LYON</span>
                 </div>
                 <div className="pt-2">
-                  <a 
-                    href="https://image.noelshack.com/fichiers/2026/19/2/1778015123-photo-2026-05-05-23-05-14.jpg" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="btn-primary inline-block text-center w-full sm:w-auto"
+                  <button 
+                    onClick={() => setShowRegistration(true)}
+                    className="btn-primary w-full sm:w-auto text-center cursor-pointer"
                   >
                     S'inscrire
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -218,18 +230,72 @@ export default function Home() {
         <div className="mb-16">
           <h2 className="text-sm font-bold text-brand uppercase tracking-widest mb-2">Protection & Futur</h2>
           <h3 className="text-3xl md:text-4xl font-display font-bold uppercase">HAFANI - ASSURANCE décès</h3>
-          <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
+          <p className="text-gray-400 mt-4 max-w-2xl mx-auto text-lg leading-relaxed mb-6">
             Notre programme d'assurance décès exclusif, structuré en pôles régionaux pour une proximité maximale.
           </p>
+          <div className="mb-8">
+            <button 
+              onClick={() => setShowInsuranceDetails(!showInsuranceDetails)}
+              className="text-brand hover:text-white text-sm font-bold uppercase tracking-widest transition-colors inline-flex items-center gap-2 group"
+            >
+              {showInsuranceDetails ? 'Voir moins' : 'En savoir plus'}
+              <ArrowRight className={`w-4 h-4 transition-transform ${showInsuranceDetails ? 'rotate-90' : 'group-hover:translate-x-1'}`} />
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {showInsuranceDetails && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="overflow-hidden mb-12 text-left max-w-3xl mx-auto"
+              >
+                <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-8 md:p-12 backdrop-blur-xl relative">
+                  <div className="absolute top-0 left-12 w-24 h-1 bg-brand/50 rounded-full" />
+                  <div className="space-y-8">
+                    <p className="text-gray-300 leading-relaxed font-medium italic">
+                      Notre programme d’assurance décès a pour objectif d’accompagner les membres et leurs familles en cas de décès, en prenant en charge les démarches et les coûts liés.
+                    </p>
+                    
+                    <div className="space-y-4">
+                      <h4 className="text-brand font-bold uppercase tracking-widest text-xs">En cas de décès en France, à La Réunion ou aux Comores :</h4>
+                      <p className="text-gray-400 text-sm leading-relaxed">
+                        L’assurance couvre l’ensemble des frais liés aux obsèques. Cela inclut notamment les services de pompes funèbres ainsi que les frais de rapatriement du corps vers les Comores ou vers tout autre lieu choisi par la personne.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4 border-l-2 border-white/5 pl-6">
+                      <h4 className="text-brand font-bold uppercase tracking-widest text-xs">En cas de décès aux Comores :</h4>
+                      <p className="text-gray-400 text-sm leading-relaxed">
+                        Une aide financière est directement versée à la famille afin de les soutenir dans l’organisation des obsèques.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4 border-l-2 border-white/5 pl-6">
+                      <h4 className="text-brand font-bold uppercase tracking-widest text-xs">Fonctionnement de la cotisation :</h4>
+                      <p className="text-gray-400 text-sm leading-relaxed">
+                        Toute personne qui cotise au cours d’une année bénéficie de la couverture pour l’année suivante.
+                      </p>
+                    </div>
+
+                    <p className="pt-6 border-t border-white/10 text-white/50 italic text-sm text-center font-light">
+                      Ce programme vise ainsi à soulager les familles des contraintes financières et organisationnelles dans des moments difficiles, tout en respectant les volontés du défunt.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="mt-8">
-            <a 
-              href="https://wa.me/33646689634" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="btn-primary"
+            <button 
+              onClick={() => setShowRegistration(true)}
+              className="btn-primary cursor-pointer px-10"
             >
               S'inscrire
-            </a>
+            </button>
           </div>
         </div>
 
@@ -305,6 +371,106 @@ export default function Home() {
                 
                 <p className="text-xs text-gray-500 italic">Cet accès est strictement réservé aux résidents du pôle Bretagne.</p>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showRegistration && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowRegistration(false)}
+              className="absolute inset-0 bg-black/90 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-lg bg-gray-900 border border-white/10 rounded-[2.5rem] p-8 md:p-12 overflow-hidden shadow-2xl"
+            >
+              <button 
+                onClick={() => setShowRegistration(false)}
+                className="absolute top-6 right-6 p-2 hover:bg-white/10 rounded-full transition-colors z-10"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <div className="mb-10 text-center">
+                <h2 className="text-3xl font-display font-black text-brand uppercase tracking-tight mb-2">Rejoindre l'association</h2>
+                <div className="w-12 h-1 bg-brand/50 mx-auto rounded-full" />
+              </div>
+
+              <form onSubmit={handleRegistrationSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-white/50 uppercase tracking-widest pl-1">Prénom</label>
+                    <input 
+                      required
+                      type="text"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-brand/50 transition-all font-medium"
+                      placeholder="Votre prénom"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-white/50 uppercase tracking-widest pl-1">Nom de famille</label>
+                    <input 
+                      required
+                      type="text"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-brand/50 transition-all font-medium"
+                      placeholder="Votre nom"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-white/50 uppercase tracking-widest pl-1">Ville Affiliée</label>
+                  <select 
+                    required
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 focus:outline-none focus:border-brand/50 transition-all appearance-none cursor-pointer font-medium"
+                    value={formData.city}
+                    onChange={(e) => setFormData({...formData, city: e.target.value})}
+                  >
+                    <option value="" className="bg-gray-950">Sélectionnez votre ville</option>
+                    <option value="Paris" className="bg-gray-950">Paris / Île-de-France</option>
+                    <option value="Lyon" className="bg-gray-950">Lyon</option>
+                    <option value="Marseille" className="bg-gray-950">Marseille</option>
+                    <option value="Vannes" className="bg-gray-950">Vannes / Bretagne</option>
+                    <option value="La Reunion" className="bg-gray-950">La Réunion</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-2">
+                   <button
+                    type="button"
+                    onClick={() => setFormData({...formData, gender: 'Homme'})}
+                    className={`py-4 rounded-2xl font-bold uppercase tracking-widest text-xs border transition-all ${formData.gender === 'Homme' ? 'bg-brand text-black border-brand' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
+                  >
+                    Homme
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData({...formData, gender: 'Femme'})}
+                    className={`py-4 rounded-2xl font-bold uppercase tracking-widest text-xs border transition-all ${formData.gender === 'Femme' ? 'bg-brand text-black border-brand' : 'bg-white/5 border-white/10 text-white/40 hover:border-white/30'}`}
+                  >
+                    Femme
+                  </button>
+                </div>
+
+                <button 
+                  type="submit"
+                  disabled={!formData.firstName || !formData.lastName || !formData.city || !formData.gender}
+                  className="w-full btn-primary py-5 text-lg shadow-[0_10px_30px_rgba(250,204,21,0.2)] disabled:opacity-30 disabled:scale-100 disabled:shadow-none"
+                >
+                  Envoyer ma demande
+                </button>
+              </form>
             </motion.div>
           </div>
         )}
