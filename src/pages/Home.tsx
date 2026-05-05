@@ -183,19 +183,74 @@ export default function Home() {
               )}
             </AnimatePresence>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button 
-                onClick={() => setShowRegistration(true)}
-                className="btn-outline w-full sm:w-auto text-lg px-10 uppercase inline-flex items-center justify-center cursor-pointer"
+              <a 
+                href="https://wa.me/33646689634" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn-outline w-full sm:w-auto text-lg px-10 uppercase inline-flex items-center justify-center"
               >
-                S'INSCRIRE
-              </button>
+                NOUS CONTACTER
+              </a>
             </div>
           </motion.div>
         </div>
       </section>
 
 
-      <section className="py-24 border-y border-white/5 relative overflow-hidden bg-gradient-to-b from-transparent via-white/[0.02] to-transparent">
+      {/* Events Section */}
+      <motion.section 
+        id="events"
+        className="max-w-7xl mx-auto px-6"
+        {...SECTION_ANIMATION}
+      >
+        <div className="flex items-center justify-between mb-12">
+          <div className="w-full md:w-auto text-center md:text-left">
+            <h2 className="text-sm font-bold text-brand uppercase tracking-widest mb-2">Points Forts</h2>
+            <h3 className="text-4xl font-display font-bold">Événements à Venir</h3>
+          </div>
+        </div>
+
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 overflow-hidden relative group">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 blur-[100px] -mr-32 -mt-32 group-hover:bg-brand/20 transition-colors" />
+          
+          <div className="flex flex-col gap-12 relative z-10">
+            <div className="aspect-video w-full bg-white/5 rounded-2xl border border-white/10 overflow-hidden group-hover:border-brand/30 transition-colors">
+              <img 
+                src="https://image.noelshack.com/fichiers/2026/19/2/1778015123-photo-2026-05-05-23-05-14.jpg" 
+                alt="Event" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 text-brand">
+                <Calendar className="w-6 h-6" />
+                <span className="text-xl font-semibold">{nextEvent.date}</span>
+              </div>
+              <h4 className="text-3xl md:text-5xl font-display font-bold leading-tight">{nextEvent.title}</h4>
+              <p className="text-gray-400 text-lg leading-relaxed">
+                {nextEvent.description}
+              </p>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Lieu:</span>
+                  <span className="text-2xl font-display font-black text-brand underline decoration-brand/30">LYON</span>
+                </div>
+                <div className="pt-2">
+                  <button 
+                    onClick={() => setShowRegistration(true)}
+                    className="btn-primary w-full sm:w-auto text-center cursor-pointer"
+                  >
+                    S'inscrire
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      <section className="py-24 border-y border-white/5 relative overflow-hidden bg-white/[0.02]">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-brand/20 to-transparent" />
         
         <div className="mb-12 max-w-7xl mx-auto px-6">
@@ -204,8 +259,8 @@ export default function Home() {
         </div>
 
         <div className="relative pause-on-hover px-4">
-          <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-navy/90 to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-navy/90 to-transparent z-10 pointer-events-none" />
+          <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-navy/40 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-navy/40 to-transparent z-10 pointer-events-none" />
           
           <div className="overflow-hidden">
             <div className="flex gap-8 py-4 animate-scroll whitespace-nowrap w-max">
@@ -336,59 +391,6 @@ export default function Home() {
         </div>
 
       {/* Remove individual member section, logic moved to new CityContributions page */}
-      </motion.section>
-
-      {/* Events Section */}
-      <motion.section 
-        id="events"
-        className="max-w-7xl mx-auto px-6"
-        {...SECTION_ANIMATION}
-      >
-        <div className="flex items-center justify-between mb-12">
-          <div className="w-full md:w-auto text-center md:text-left">
-            <h2 className="text-sm font-bold text-brand uppercase tracking-widest mb-2">Points Forts</h2>
-            <h3 className="text-4xl font-display font-bold">Événements à Venir</h3>
-          </div>
-        </div>
-
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 overflow-hidden relative group">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 blur-[100px] -mr-32 -mt-32 group-hover:bg-brand/20 transition-colors" />
-          
-          <div className="flex flex-col gap-12 relative z-10">
-            <div className="aspect-video w-full bg-white/5 rounded-2xl border border-white/10 overflow-hidden group-hover:border-brand/30 transition-colors">
-              <img 
-                src="https://image.noelshack.com/fichiers/2026/19/2/1778015123-photo-2026-05-05-23-05-14.jpg" 
-                alt="Event" 
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="space-y-6">
-              <div className="flex items-center gap-3 text-brand">
-                <Calendar className="w-6 h-6" />
-                <span className="text-xl font-semibold">{nextEvent.date}</span>
-              </div>
-              <h4 className="text-3xl md:text-5xl font-display font-bold leading-tight">{nextEvent.title}</h4>
-              <p className="text-gray-400 text-lg leading-relaxed">
-                {nextEvent.description}
-              </p>
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Lieu:</span>
-                  <span className="text-2xl font-display font-black text-brand underline decoration-brand/30">LYON</span>
-                </div>
-                <div className="pt-2">
-                  <button 
-                    onClick={() => setShowRegistration(true)}
-                    className="btn-primary w-full sm:w-auto text-center cursor-pointer"
-                  >
-                    S'inscrire
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </motion.section>
 
       {/* Auth Modal (Specific to Vannes) */}
