@@ -24,10 +24,11 @@ export default function Home() {
   const nextEvent = EVENTS[0];
 
   const CITIES = [
-    { name: 'Lyon', image: 'https://images.unsplash.com/photo-1528660493888-ab6f4761e036?q=80&w=2070&auto=format&fit=crop' },
-    { name: 'Paris', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=2073&auto=format&fit=crop' },
-    { name: 'Marseille', image: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=2073&auto=format&fit=crop' },
-    { name: 'Vannes', image: 'https://images.unsplash.com/photo-1572455044327-7348c1be7267?q=80&w=2070&auto=format&fit=crop' }
+    { id: 'paris', name: 'Paris', image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=2073&auto=format&fit=crop' },
+    { id: 'lyon', name: 'Lyon', image: 'https://images.unsplash.com/photo-1528660493888-ab6f4761e036?q=80&w=2070&auto=format&fit=crop' },
+    { id: 'marseille', name: 'Marseille', image: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=2073&auto=format&fit=crop' },
+    { id: 'vannes', name: 'Vannes', image: 'https://images.unsplash.com/photo-1572455044327-7348c1be7267?q=80&w=2070&auto=format&fit=crop' },
+    { id: 'reunion', name: 'La Réunion', image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=2074&auto=format&fit=crop' }
   ];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -191,15 +192,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {CITIES.map((city) => (
-            <button 
-              key={city.name}
-              onClick={() => {
-                setSelectedCity(city.name);
-                setSelectedMember(null);
-              }}
-              className={`group relative h-64 rounded-3xl overflow-hidden border transition-all active:scale-95 ${selectedCity === city.name ? 'border-brand border-2 scale-[1.02]' : 'border-white/10 hover:border-brand/50'}`}
+            <Link 
+              key={city.id}
+              to={`/hafani/${city.id}`}
+              className="group relative h-64 rounded-3xl overflow-hidden border transition-all active:scale-95 border-white/10 hover:border-brand/50"
             >
               <img 
                 src={city.image} 
@@ -211,101 +209,13 @@ export default function Home() {
                 <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-black transition-colors">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
-                <span className="text-2xl font-display font-black tracking-tight">{city.name}</span>
+                <span className="text-xl font-display font-black tracking-tight">{city.name}</span>
               </div>
-            </button>
+            </Link>
           ))}
         </div>
 
-        <AnimatePresence mode="wait">
-          {selectedCity && (
-            <motion.div
-              layout
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="mt-12 bg-white/5 border border-white/10 rounded-3xl p-8 text-left overflow-hidden"
-            >
-              <div className="flex items-center justify-between mb-8">
-                <h4 className="text-2xl font-display font-bold">Membres inscrits à <span className="text-brand">{selectedCity}</span></h4>
-                <button onClick={() => setSelectedCity(null)} className="text-gray-500 hover:text-white"><X className="w-6 h-6" /></button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(selectedCity === 'Paris' ? ['LAYRINGO'] : []).map((member) => (
-                  <button 
-                    key={member}
-                    onClick={() => setSelectedMember(member)}
-                    className={`flex items-center justify-between p-6 rounded-2xl border transition-all ${selectedMember === member ? 'bg-brand/10 border-brand' : 'bg-white/5 border-white/10 hover:border-white/30'}`}
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
-                        <User className="w-5 h-5 text-brand" />
-                      </div>
-                      <span className="text-lg font-semibold">{member}</span>
-                    </div>
-                    <ArrowRight className={`w-5 h-5 transition-transform ${selectedMember === member ? 'translate-x-1 text-brand' : 'text-gray-600'}`} />
-                  </button>
-                ))}
-                {selectedCity !== 'Paris' && (
-                  <div className="col-span-full py-12 text-center bg-white/5 rounded-2xl border border-white/10">
-                    <p className="text-gray-500 italic">Aucun membre enregistré pour le moment à {selectedCity}.</p>
-                  </div>
-                )}
-              </div>
-
-              <AnimatePresence>
-                {selectedMember && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-8 bg-brand/5 border border-brand/20 rounded-2xl p-4 md:p-6"
-                  >
-                    <div className="flex flex-col gap-5">
-                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
-                        <div className="space-y-1">
-                          <h5 className="text-2xl font-display font-black text-white">{selectedMember}</h5>
-                          <p className="text-sm text-gray-400">Membre certifié • <span className="text-brand font-bold">{selectedCity}</span></p>
-                          {selectedMember === 'LAYRINGO' && (
-                            <div className="flex items-center gap-2 pt-1">
-                                <span className="text-[10px] font-bold text-gray-500 uppercase">Tél:</span>
-                                <span className="text-sm font-mono text-brand">07 61 77 15 20</span>
-                            </div>
-                          )}
-                        </div>
-                        
-                        <div className="bg-white/5 p-3 rounded-xl border border-white/10 flex-shrink-0">
-                          <p className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">État de l'assurance</p>
-                          <p className="text-lg font-bold text-green-400 flex items-center gap-2">
-                            <ShieldCheck className="w-5 h-5" /> VOUS ÊTES À JOUR
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="bg-navy/50 border border-white/10 p-3 rounded-xl text-center">
-                          <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Année 2024</p>
-                          <p className="text-brand font-black text-base">À JOUR</p>
-                        </div>
-                        <div className="bg-navy/50 border border-white/10 p-3 rounded-xl text-center">
-                          <p className="text-[10px] text-gray-500 uppercase font-bold mb-1">Année 2025</p>
-                          <p className="text-brand font-black text-base">À JOUR</p>
-                        </div>
-                      </div>
-
-                      <div className="bg-green-400/5 border border-green-400/20 p-3 rounded-xl flex items-center gap-2">
-                        <ShieldCheck className="w-4 h-4 text-green-400 shrink-0" />
-                        <p className="text-[13px] text-green-400/90 italic leading-tight">
-                          Félicitations {selectedMember} ! Cotisations 2024 & 2025 validées.
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          )}
-        </AnimatePresence>
+      {/* Remove individual member section, logic moved to new CityContributions page */}
       </motion.section>
 
       {/* Auth Modal (Specific to Vannes) */}

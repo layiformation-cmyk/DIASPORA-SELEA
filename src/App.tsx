@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import Home from './pages/Home';
 import AllEvents from './pages/AllEvents';
 import PrivatePage from './pages/PrivatePage';
+import CityContributions from './pages/CityContributions';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -73,6 +74,7 @@ export default function App() {
             <Route path="/" element={<Home />} />
             <Route path="/events" element={<AllEvents />} />
             <Route path="/private" element={<PrivatePage />} />
+            <Route path="/hafani/:cityId" element={<CityContributions />} />
           </Routes>
         </main>
         
