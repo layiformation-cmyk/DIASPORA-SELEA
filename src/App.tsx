@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import AllEvents from './pages/AllEvents';
 import PrivatePage from './pages/PrivatePage';
 import CityContributions from './pages/CityContributions';
+import ProjectDetails from './pages/ProjectDetails';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,7 @@ function Navbar() {
           <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center shrink-0">
             <Shield className="w-5 h-5 text-black" />
           </div>
-          <span className="leading-tight text-lg">DIASPORA DE SELEA BAMBAO</span>
+          <span className="leading-tight text-lg">DIASPORA DE SELEA</span>
         </Link>
 
         {/* Desktop Nav */}
@@ -75,11 +76,12 @@ export default function App() {
             <Route path="/events" element={<AllEvents />} />
             <Route path="/private" element={<PrivatePage />} />
             <Route path="/hafani/:cityId" element={<CityContributions />} />
+            <Route path="/projets-details" element={<ProjectDetails />} />
           </Routes>
         </main>
         
         <footer className="py-12 border-t border-white/10 text-center text-gray-500 text-sm px-6">
-          <p>© 2026 DIASPORA DE SELEA BAMBAO. Tous droits réservés.</p>
+          <p>© 2026 DIASPORA DE SELEA. Tous droits réservés.</p>
         </footer>
       </div>
     </BrowserRouter>

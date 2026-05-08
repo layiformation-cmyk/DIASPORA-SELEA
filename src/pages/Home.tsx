@@ -72,7 +72,9 @@ export default function Home() {
     { id: 'lyon', name: 'Lyon', image: 'https://images.unsplash.com/photo-1528660493888-ab6f4761e036?q=80&w=2070&auto=format&fit=crop' },
     { id: 'marseille', name: 'Marseille', image: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=2073&auto=format&fit=crop' },
     { id: 'vannes', name: 'Vannes', image: 'https://images.unsplash.com/photo-1572455044327-7348c1be7267?q=80&w=2070&auto=format&fit=crop' },
-    { id: 'reunion', name: 'La Réunion', image: 'https://image.noelshack.com/fichiers/2026/19/3/1778020749-photos-la-reunion-cascade-aigrettes.jpg' }
+    { id: 'saint-nazaire', name: 'Saint-Nazaire', image: 'https://image.noelshack.com/fichiers/2026/19/6/1778278080-snag-0067944-30.jpg' },
+    { id: 'reunion', name: 'La Réunion', image: 'https://image.noelshack.com/fichiers/2026/19/3/1778020749-photos-la-reunion-cascade-aigrettes.jpg' },
+    { id: 'mayotte', name: 'Mayotte', image: 'https://image.noelshack.com/fichiers/2026/19/6/1778278104-mayotte-mamoudzou-1800x1000-d259bf1d.jpg' }
   ];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -206,15 +208,15 @@ export default function Home() {
         <div className="flex items-center justify-between mb-12">
           <div className="w-full md:w-auto text-center md:text-left">
             <h2 className="text-sm font-bold text-brand uppercase tracking-widest mb-2">Points Forts</h2>
-            <h3 className="text-4xl font-display font-bold">Événements à Venir</h3>
+            <h3 className="text-3xl md:text-4xl font-display font-bold">Événements à Venir</h3>
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 overflow-hidden relative group">
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-10 overflow-hidden relative group">
           <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 blur-[100px] -mr-32 -mt-32 group-hover:bg-brand/20 transition-colors" />
           
-          <div className="flex flex-col gap-12 relative z-10">
-            <div className="aspect-video w-full bg-white/5 rounded-2xl border border-white/10 overflow-hidden group-hover:border-brand/30 transition-colors">
+          <div className="flex flex-col md:flex-row gap-8 md:gap-12 relative z-10 items-center">
+            <div className="w-full md:w-2/5 aspect-video md:aspect-square bg-white/5 rounded-2xl border border-white/10 overflow-hidden group-hover:border-brand/30 transition-colors shrink-0">
               <img 
                 src="https://image.noelshack.com/fichiers/2026/19/2/1778015123-photo-2026-05-05-23-05-14.jpg" 
                 alt="Event" 
@@ -222,27 +224,79 @@ export default function Home() {
                 referrerPolicy="no-referrer"
               />
             </div>
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6 flex-1">
               <div className="flex items-center gap-3 text-brand">
-                <Calendar className="w-6 h-6" />
-                <span className="text-xl font-semibold">{nextEvent.date}</span>
+                <Calendar className="w-5 h-5 md:w-6 md:h-6" />
+                <span className="text-lg md:text-xl font-semibold">{nextEvent.date}</span>
               </div>
-              <h4 className="text-3xl md:text-5xl font-display font-bold leading-tight">{nextEvent.title}</h4>
-              <p className="text-gray-400 text-lg leading-relaxed">
+              <h4 className="text-2xl md:text-4xl font-display font-bold leading-tight">{nextEvent.title}</h4>
+              <p className="text-gray-400 text-base md:text-lg leading-relaxed line-clamp-3 md:line-clamp-none">
                 {nextEvent.description}
               </p>
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-8">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-gray-500 uppercase tracking-widest">Lieu:</span>
-                  <span className="text-2xl font-display font-black text-brand underline decoration-brand/30">LYON</span>
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Lieu:</span>
+                  <span className="text-xl md:text-2xl font-display font-black text-brand underline decoration-brand/30">LYON</span>
                 </div>
-                <div className="pt-2">
+                <div>
                   <button 
                     onClick={() => setShowRegistration(true)}
-                    className="btn-primary w-full sm:w-auto text-center cursor-pointer"
+                    className="btn-primary w-full sm:w-auto text-center cursor-pointer py-2 md:py-3 text-sm md:text-base"
                   >
                     S'inscrire
                   </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Projets en cours Section */}
+      <motion.section 
+        className="max-w-7xl mx-auto px-6 py-12"
+        {...SECTION_ANIMATION}
+      >
+        <div className="flex items-center justify-between mb-12">
+          <div className="w-full md:w-auto text-center md:text-left">
+            <h2 className="text-sm font-bold text-brand uppercase tracking-widest mb-2">Développement</h2>
+            <h3 className="text-3xl md:text-4xl font-display font-bold">Projets en cours ...</h3>
+          </div>
+        </div>
+
+        <div className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-10 overflow-hidden relative group text-left">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-brand/10 blur-[100px] -mr-32 -mt-32 group-hover:bg-brand/20 transition-colors" />
+          
+          <div className="flex flex-col md:flex-row gap-8 md:gap-12 relative z-10 items-center">
+            <div className="w-full md:w-2/5 aspect-video md:aspect-square bg-white/5 rounded-2xl border border-white/10 overflow-hidden group-hover:border-brand/30 transition-colors shrink-0">
+              <img 
+                src="https://image.noelshack.com/fichiers/2026/19/5/1778267457-chatgpt-image-8-mai-2026-21-10-47.jpg" 
+                alt="Projet en cours" 
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="space-y-4 md:space-y-6 flex-1">
+              <div className="flex items-center gap-3 text-brand">
+                <ShieldCheck className="w-5 h-5 md:w-6 md:h-6" />
+                <span className="text-lg md:text-xl font-semibold">Impact Social & Développement</span>
+              </div>
+              <h4 className="text-2xl md:text-4xl font-display font-bold leading-tight">Construction et Modernisation</h4>
+              <p className="text-gray-400 text-base md:text-lg leading-relaxed line-clamp-3 md:line-clamp-none">
+                Nous travaillons actuellement sur des projets structurants pour améliorer les conditions de vie et renforcer les infrastructures communautaires. Chaque contribution compte pour bâtir l'avenir de Selea.
+              </p>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4 md:gap-8">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Statut:</span>
+                  <span className="text-xl md:text-2xl font-display font-black text-brand underline decoration-brand/30 uppercase tracking-tighter">En Progression</span>
+                </div>
+                <div>
+                  <Link 
+                    to="/projets-details"
+                    className="btn-primary inline-block w-full sm:w-auto text-center cursor-pointer py-2 md:py-3 text-sm md:text-base"
+                  >
+                    Soutenir le projet
+                  </Link>
                 </div>
               </div>
             </div>
@@ -542,6 +596,7 @@ export default function Home() {
                     <option value="Lyon" className="bg-gray-950">Lyon</option>
                     <option value="Marseille" className="bg-gray-950">Marseille</option>
                     <option value="Vannes" className="bg-gray-950">Vannes / Bretagne</option>
+                    <option value="Saint-Nazaire" className="bg-gray-950">Saint-Nazaire</option>
                     <option value="La Reunion" className="bg-gray-950">La Réunion</option>
                   </select>
                 </div>

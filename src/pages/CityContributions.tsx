@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { ShieldCheck, ShieldAlert, User, ArrowLeft, X, Check, Minus, Search } from 'lucide-react';
 import { useState, useMemo } from 'react';
@@ -6,6 +6,9 @@ import { CONTRIBUTORS_DATA, Contributor } from '../data/contributors';
 
 export default function CityContributions() {
   const { cityId } = useParams();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const isProjectView = searchParams.get('view') === 'project';
   const city = CONTRIBUTORS_DATA.find(c => c.id === cityId);
   const [selectedContributor, setSelectedContributor] = useState<Contributor | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,8 +36,8 @@ export default function CityContributions() {
     <div className="max-w-7xl mx-auto px-6 py-12 pt-24 md:pt-32">
       <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
         <div className="flex-1">
-          <Link to="/" className="text-gray-400 hover:text-white flex items-center gap-2 mb-6 transition-colors group w-fit">
-            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Retour à l'accueil
+          <Link to={isProjectView ? '/projets-details' : '/'} className="text-gray-400 hover:text-white flex items-center gap-2 mb-6 transition-colors group w-fit">
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" /> Retour
           </Link>
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 bg-brand/10 rounded-2xl flex items-center justify-center text-brand shrink-0">
@@ -45,7 +48,11 @@ export default function CityContributions() {
             </h1>
           </div>
           <p className="text-xl text-gray-400 max-w-2xl leading-relaxed">
-            Liste officielle des membres cotisants au programme <span className="text-white font-bold italic">Hafani de Selea</span>.
+            {cityId === 'paris' && isProjectView ? (
+              <>Liste officielle des membres cotisants au <span className="text-white font-bold italic">projet de séléa</span>.</>
+            ) : (
+              <>Liste officielle des membres cotisants au <span className="text-white font-bold italic">{isProjectView ? 'projet de Séléa' : 'programme Hafani de Selea'}</span>.</>
+            )}
           </p>
         </div>
 
@@ -82,10 +89,10 @@ export default function CityContributions() {
               </div>
             </div>
             <div className="flex flex-col items-end gap-1.5 shrink-0 ml-2">
-              <span className="text-[10px] font-black text-brand tabular-nums">{contributor.amount}</span>
+              <span className={`text-[10px] font-black tabular-nums transition-colors ${['100,00 €', '200,00 €', '500,00 €'].includes(contributor.amount) ? 'text-brand' : 'text-red-500'}`}>{contributor.amount || "0,00 €"}</span>
               <div 
-                className={`w-2 h-2 rounded-full ${contributor.contributions['2025'] === 'X' || contributor.contributions['2025'] === 'XX' ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`} 
-                title={contributor.contributions['2025'] === 'X' || contributor.contributions['2025'] === 'XX' ? 'À jour' : 'Pas à jour'} 
+                className={`w-2 h-2 rounded-full ${['100,00 €', '200,00 €', '500,00 €'].includes(contributor.amount) ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.5)]'}`} 
+                title={['100,00 €', '200,00 €', '500,00 €'].includes(contributor.amount) ? 'À jour' : 'Pas à jour'} 
               />
             </div>
           </motion.button>
@@ -148,11 +155,11 @@ export default function CityContributions() {
                 <div className="grid grid-cols-2 gap-3 md:gap-4">
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
                     <p className="text-[9px] text-gray-500 uppercase font-black tracking-widest mb-1">Cotisation</p>
-                    <p className="text-xl md:text-2xl font-display font-bold text-brand">{selectedContributor.amount}</p>
+                    <p className={`text-xl md:text-2xl font-display font-bold ${['100,00 €', '200,00 €', '500,00 €'].includes(selectedContributor.amount) ? 'text-brand' : 'text-red-500'}`}>{selectedContributor.amount || "0,00 €"}</p>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
                     <p className="text-[9px] text-gray-500 uppercase font-black tracking-widest mb-1">État global</p>
-                    {selectedContributor.contributions['2025'] === 'X' || selectedContributor.contributions['2025'] === 'XX' ? (
+                    {['100,00 €', '200,00 €', '500,00 €'].includes(selectedContributor.amount) ? (
                       <p className="text-sm md:text-base font-bold text-green-400 flex items-center gap-2">
                         <ShieldCheck className="w-4 h-4 md:w-5 md:h-5" /> À JOUR
                       </p>
@@ -164,54 +171,58 @@ export default function CityContributions() {
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                    <div className="w-1 h-1 bg-brand rounded-full" />
-                    Récapitulatif (2024 - 2027)
-                  </h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
-                    {Object.entries(selectedContributor.contributions).map(([year, status]) => (
-                      <div 
-                        key={year}
-                        className={`p-3 md:p-4 rounded-xl border flex flex-col items-center gap-1.5 transition-all ${
-                          status === 'X' || status === 'XX' 
-                            ? 'bg-brand/10 border-brand/30' 
-                            : status === 'NE' 
-                            ? 'bg-orange-500/10 border-orange-500/30'
-                            : 'bg-white/5 border-white/10 opacity-40'
-                        }`}
-                      >
-                        <span className="text-[10px] font-black opacity-60 tracking-wider">{year}</span>
-                        {status === 'X' || status === 'XX' ? (
-                          <div className="flex flex-col items-center gap-0.5">
-                            <Check className="w-4 h-4 text-brand" />
-                            <span className="text-[8px] font-black text-brand uppercase">{status === 'XX' ? 'Option F.' : 'Validé'}</span>
+                {!isProjectView && (
+                  <>
+                    <div className="space-y-4">
+                      <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                        <div className="w-1 h-1 bg-brand rounded-full" />
+                        Récapitulatif (2024 - 2027)
+                      </h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+                        {Object.entries(selectedContributor.contributions).map(([year, status]) => (
+                          <div 
+                            key={year}
+                            className={`p-3 md:p-4 rounded-xl border flex flex-col items-center gap-1.5 transition-all ${
+                              status === 'X' || status === 'XX' 
+                                ? 'bg-brand/10 border-brand/30' 
+                                : status === 'NE' 
+                                ? 'bg-orange-500/10 border-orange-500/30'
+                                : 'bg-white/5 border-white/10 opacity-40'
+                            }`}
+                          >
+                            <span className="text-[10px] font-black opacity-60 tracking-wider">{year}</span>
+                            {status === 'X' || status === 'XX' ? (
+                              <div className="flex flex-col items-center gap-0.5">
+                                <Check className="w-4 h-4 text-brand" />
+                                <span className="text-[8px] font-black text-brand uppercase">{status === 'XX' ? 'Option F.' : 'Validé'}</span>
+                              </div>
+                            ) : status === 'NE' ? (
+                              <div className="flex flex-col items-center gap-0.5">
+                                <span className="text-[10px] font-black text-orange-400">NE</span>
+                                <span className="text-[8px] font-black text-orange-400 uppercase">En attente</span>
+                              </div>
+                            ) : (
+                              <Minus className="w-4 h-4 text-gray-700 mt-1" />
+                            )}
                           </div>
-                        ) : status === 'NE' ? (
-                          <div className="flex flex-col items-center gap-0.5">
-                            <span className="text-[10px] font-black text-orange-400">NE</span>
-                            <span className="text-[8px] font-black text-orange-400 uppercase">En attente</span>
-                          </div>
-                        ) : (
-                          <Minus className="w-4 h-4 text-gray-700 mt-1" />
-                        )}
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                </div>
+                    </div>
 
-                <div className="pt-2">
-                   <div className="bg-brand/5 border border-brand/20 p-4 rounded-2xl flex items-center gap-4">
-                    <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center shrink-0">
-                      <ShieldCheck className="w-5 h-5 text-black" />
+                    <div className="pt-2">
+                       <div className="bg-brand/5 border border-brand/20 p-4 rounded-2xl flex items-center gap-4">
+                        <div className="w-8 h-8 bg-brand rounded-lg flex items-center justify-center shrink-0">
+                          <ShieldCheck className="w-5 h-5 text-black" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-white/90 leading-snug">
+                            Ce récapitulatif atteste de votre participation active à la <span className="text-brand font-bold text-[10px] uppercase">DIASPORA DE SELEA</span>.
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-white/90 leading-snug">
-                        Ce récapitulatif atteste de votre participation active à la <span className="text-brand font-bold text-[10px] uppercase">DIASPORA DE SELEA BAMBAO</span>.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                  </>
+                )}
 
                 <button 
                   onClick={() => setSelectedContributor(null)}
